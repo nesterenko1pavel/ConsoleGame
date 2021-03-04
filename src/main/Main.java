@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanCommand = new Scanner(System.in);
         Scanner scanCoordinates = new Scanner(System.in);
-        Scanner scanDirection = new Scanner(System.in);
         Scanner scanNote = new Scanner(System.in);
 
         MapGrid objMap = new MapGrid(7, 5);           // map
@@ -24,9 +23,12 @@ public class Main {
         objMap.printGrid(person);
 
         String command;
+        int event;              // var for movement
+
+        System.out.println("---Try to find 3 superstars to win---");
 
         while (true) {
-            System.out.println("you can use: exit, setXY, setDefaultXY, go, generateResources, stats, addNote, deleteNote, checkNotes");
+            System.out.println("you can use: exit, setXY, setDefaultXY, go top/bottom/left/right, generateResources, stats, addNote, deleteNote, checkNotes");
             System.out.print(">> ");
             command = scanCommand.nextLine();
 
@@ -67,103 +69,109 @@ public class Main {
                     }
 
                     break;
-                case "go":
+                case "go top":
                     if (person.getIsOnMap()) {
-                        System.out.print("direction <top, bottom, left, right>:  ");
-                        String direction = scanDirection.nextLine();
+                        if (objMap.getLastX() - 1 >= 0) {
+                            person.setX(person.getX() - 1);
+                            event = objMap.pos(person.getX(), person.getY());
 
-                        int event;
+                            objMap.printGrid(person);
+                            act.actions(event, person);
+                        } else {
+                            objMap.expandSize();
 
-                        switch (direction) {
-                            case "top":
-                                if (objMap.getLastX() - 1 >= 0) {
-                                    person.setX(person.getX() - 1);
-                                    event = objMap.pos(person.getX(), person.getY());
+                            person.setX(person.getX() - 1);
 
-                                    objMap.printGrid(person);
-                                    person = act.actions(event, person);
-                                } else {
-                                    objMap.expandSize();
+                            event = objMap.pos(person.getX(), person.getY());
 
-                                    person.setX(person.getX() - 1);
-
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    System.out.println("the boundaries of the world have been expanded!");
-                                    person = act.actions(event, person);
-                                }
-
-                                break;
-                            case "bottom":
-                                if (objMap.getLastX() + 1 < objMap.getSize()) {
-                                    person.setX(person.getX() + 1);
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    person = act.actions(event, person);
-                                } else {
-                                    objMap.expandSize();
-
-                                    person.setX(person.getX() + 1);
-
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    System.out.println("the boundaries of the world have been expanded!");
-                                    person = act.actions(event, person);
-                                }
-
-                                break;
-                            case "left":
-                                if (objMap.getLastY() - 1 >= 0) {
-                                    person.setY(person.getY() - 1);
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    person = act.actions(event, person);
-                                } else {
-                                    objMap.expandSize();
-
-                                    person.setY(person.getY() - 1);
-
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    System.out.println("the boundaries of the world have been expanded!");
-                                    person = act.actions(event, person);
-                                }
-
-                                break;
-                            case "right":
-                                if (objMap.getLastY() + 1 < objMap.getSize()) {
-                                    person.setY(person.getY() + 1);
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    person = act.actions(event, person);
-                                } else {
-                                    objMap.expandSize();
-
-                                    person.setY(person.getY() + 1);
-
-                                    event = objMap.pos(person.getX(), person.getY());
-
-                                    objMap.printGrid(person);
-                                    System.out.println("the boundaries of the world have been expanded!");
-                                    person = act.actions(event, person);
-                                }
-
-                                break;
-                            default:
-                                System.out.println("incorrect direction");
-                        }               // movement of the character
-
-                        person.setAge(person.getAge() + 1);         // with each move the player is one point older
+                            objMap.printGrid(person);
+                            System.out.println("the boundaries of the world have been expanded!");
+                            act.actions(event, person);
+                        }
                     } else {
-                        System.out.println("You should set coordinates of the player");
+                        System.out.println("You should set coordinates of the player if you don't and check your command");
+                        break;
                     }
 
+                    person.setAge(person.getAge() + 1);         // with each move the player is one point older
+                    break;
+                case "go bottom":
+                    if (person.getIsOnMap()) {
+                        if (objMap.getLastX() + 1 < objMap.getSize()) {
+                            person.setX(person.getX() + 1);
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            act.actions(event, person);
+                        } else {
+                            objMap.expandSize();
+
+                            person.setX(person.getX() + 1);
+
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            System.out.println("the boundaries of the world have been expanded!");
+                            act.actions(event, person);
+                        }
+                    } else {
+                        System.out.println("You should set coordinates of the player if you don't and check your command");
+                        break;
+                    }
+
+                    person.setAge(person.getAge() + 1);         // with each move the player is one point older
+                    break;
+                case "go left":
+                    if (person.getIsOnMap()) {
+                        if (objMap.getLastY() - 1 >= 0) {
+                            person.setY(person.getY() - 1);
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            act.actions(event, person);
+                        } else {
+                            objMap.expandSize();
+
+                            person.setY(person.getY() - 1);
+
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            System.out.println("the boundaries of the world have been expanded!");
+                            act.actions(event, person);
+                        }
+                    } else {
+                        System.out.println("You should set coordinates of the player if you don't and check your command");
+                        break;
+                    }
+
+                    person.setAge(person.getAge() + 1);         // with each move the player is one point older
+                    break;
+                case "go right":
+                    if (person.getIsOnMap()) {
+                        if (objMap.getLastY() + 1 < objMap.getSize()) {
+                            person.setY(person.getY() + 1);
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            act.actions(event, person);
+                        } else {
+                            objMap.expandSize();
+
+                            person.setY(person.getY() + 1);
+
+                            event = objMap.pos(person.getX(), person.getY());
+
+                            objMap.printGrid(person);
+                            System.out.println("the boundaries of the world have been expanded!");
+                            act.actions(event, person);
+                        }
+                    } else {
+                        System.out.println("You should set coordinates of the player if you don't and check your command");
+                        break;
+                    }
+
+                    person.setAge(person.getAge() + 1);         // with each move the player is one point older
                     break;
                 case "generateResources":
                     objMap.generateResources(objMap.getGrid(), objMap.getSize());

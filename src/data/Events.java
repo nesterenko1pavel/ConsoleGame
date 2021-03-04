@@ -3,7 +3,7 @@ package data;
 import npc.Npc;
 
 public class Events {
-    public Person actions(int event, Person person) {
+    public void actions(int event, Person person) {
         switch (event) {
             case 0:
                 break;
@@ -24,14 +24,12 @@ public class Events {
                 break;
             case 5:
                 Npc npc = new Npc();
-                person = npc.interact(person);
+                npc.interact(person);
                 break;
             case 6:
                 System.out.println("You've found a superstar!");
                 person.setSuperstar(person.getSuperstar() + 1);
                 break;
         }
-
-        return person;
     }
 }
